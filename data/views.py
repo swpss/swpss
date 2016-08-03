@@ -35,6 +35,20 @@ class DatasetView(ListAPIView):
                     machine=machine).order_by('-timestamp')
         return None
 
+class chartDatasetView(ListAPIView):
+    serializer_class = DatasetSerializer
+    permission_classes = (IsAuthenticated, )
+    lookup_field = 'm_id'
+
+    def get_queryset(self):
+        m_id = self.kwargs.get(self.lookup_field)
+
+        if m_id is not None:
+            machine = Machine.objects.get(m_id=m_id)
+            return Dataset.objects.filter(
+                    machine=machine).order_by('-timestamp')
+        return None
+
 
 class DataWithRange(ListAPIView):
     permission_classes = (IsAuthenticated, )
@@ -216,7 +230,7 @@ class GetLPDDataAnalysis(views.APIView):
                     summary_data[date] = {'st': None, 'et': None, 'lpm_arr': [], 'avg_lpm': None, 't_duration': None, 'lpd': None } 
                     pump_on = False 
                     if data['due_to'] == 0: 
-                        summary_data[date]['st'] = dataset.timestamp 
+                        summary_data[date]['st'] = dataset.timestamp
                         pump_on = True 
                         start_time = summary_data[date]['st'] 
                     else: 
@@ -319,7 +333,7 @@ class GetLPDDataAnalysis1(views.APIView):
                     else: 
                         if pump_on: 
                             pump_on = False 
-                            end_time = summary_data[date]['et'] 
+                            end_time = summary_data[date]['et']
                             total_duration += (end_time - start_time).seconds 
                 else: 
                     summary_data[date] = {'st': None, 'et': None, 'lpm_arr': [], 'avg_lpm': None, 't_duration': None, 'lpd': None } 
@@ -327,14 +341,19 @@ class GetLPDDataAnalysis1(views.APIView):
                     if data['due_to'] == 0: 
                         summary_data[date]['st'] = dataset.timestamp 
                         pump_on = True 
-                        start_time = summary_data[date]['st'] 
+                        start_time = summary_data[date]['st']
                     else: 
                         pass 
                 if data['due_to'] == 0: 
                     summary_data[date]['lpm_arr'].append(dataset.data['lpm']) 
-                if summary_data[date]['et'] == end_time: 
+                if summary_data[date]['et'] == end_time:
+                    print "end_time" 
+                    print end_time 
                     summary_data[date]['t_duration'] = total_duration 
-                else: 
+                else:
+                    # print summary_data[date]['et'] 
+                    print "start_time"
+                    print start_time
                     summary_data[date]['t_duration'] = total_duration +(summary_data[date]['et']- start_time).seconds 
             for key,value in summary_data.items(): 
                 if len(summary_data[key]['lpm_arr']) == 0: 

@@ -5,6 +5,8 @@ from data import views
 urlpatterns = [
         url(r'^data/(?P<m_id>\w+)/',
             views.DatasetView.as_view()),
+        url(r'^chartData/(?P<m_id>\w+)/',
+            views.chartDatasetView.as_view()),
         url(r'^insert/', views.DataInsert.as_view()),
         url(r'^recent/(?P<m_id>\w+)/',
             views.GetRecentData.as_view()),
