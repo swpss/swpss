@@ -409,7 +409,7 @@ class GetLPDDataAnalysis1(views.APIView):
             a.append({"date":j["date"], "avg":""})
             del(j["date"])
             lp_value_list = [x for x in j.values() if x is not None]
-            print lp_value_list
+            print len(lp_value_list)
             if len(lp_value_list)==0:
                 avg = lp_value_list[0]
                 summary[summary.index(j)]["avg"] = avg
@@ -423,11 +423,13 @@ class GetLPDDataAnalysis1(views.APIView):
                 summary[summary.index(j)]["avg"] = avg
                 summary[summary.index(j)]["date"] = a[summary.index(j)]["date"]
             elif (len(lp_value_list)%2 == 0) and len(lp_value_list) > 2:
+                lp_value_list.sort()
                 avg = (lp_value_list[len(lp_value_list)/2] + lp_value_list[(len(lp_value_list)/2)+1])/2
                 summary[summary.index(j)]["avg"] = avg
                 summary[summary.index(j)]["date"] = a[summary.index(j)]["date"]
             else:
-                avg = (lp_value_list[len(lp_value_list)/2] + lp_value_list[(len(lp_value_list)/2)+1])/2
+                lp_value_list.sort()
+                avg = lp_value_list[len(lp_value_list)/2]
                 summary[summary.index(j)]["avg"] = avg
                 summary[summary.index(j)]["date"] = a[summary.index(j)]["date"]
         return Response(summary)
